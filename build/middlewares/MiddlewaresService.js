@@ -10,20 +10,20 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var tsyringe_1 = require("tsyringe");
-var ConfigService = (function () {
-    function ConfigService() {
-        this.config = {
-            port: 3000,
+var MiddlewaresService = (function () {
+    function MiddlewaresService() {
+        this.print = function (req, _res, next) {
+            if (req.query.test) {
+                console.log(req.query.test);
+                return next();
+            }
         };
     }
-    ConfigService.prototype.getConfig = function () {
-        return this.config;
-    };
-    ConfigService = __decorate([
-        tsyringe_1.singleton(),
+    MiddlewaresService = __decorate([
+        tsyringe_1.injectable(),
         __metadata("design:paramtypes", [])
-    ], ConfigService);
-    return ConfigService;
+    ], MiddlewaresService);
+    return MiddlewaresService;
 }());
-exports.ConfigService = ConfigService;
-//# sourceMappingURL=ConfigService.js.map
+exports.MiddlewaresService = MiddlewaresService;
+//# sourceMappingURL=MiddlewaresService.js.map

@@ -18,8 +18,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
 var express_1 = __importStar(require("express"));
-var ConfigService_1 = require("./config/ConfigService");
 var tsyringe_1 = require("tsyringe");
+var ConfigService_1 = require("./config/ConfigService");
 var RouterService_1 = require("./router/RouterService");
 var Server = (function () {
     function Server(configService, router) {
@@ -28,14 +28,12 @@ var Server = (function () {
         this.router = router;
         this.startApp = function () {
             var app = _this.app;
-            app.listen(_this.config.port, function () { return console.log("App started on port *:" + _this.config.port); });
-        };
-        this.configRoutes = function () {
+            app.listen(_this.config.port, function () { return console.info("App started on port *:" + _this.config.port); });
         };
         this.config = this.configService.getConfig();
         this.app = express_1.default();
-        this.startApp();
         this.router.configureRoutes({ app: this.app, expressRouter: express_1.Router() });
+        this.startApp();
     }
     Server = __decorate([
         tsyringe_1.injectable(),

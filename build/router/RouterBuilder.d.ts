@@ -8,4 +8,6 @@ export declare class RouterBuilder {
     constructor(state?: any);
     path: (path: String) => RouterBuilder;
     build: () => any;
+    query: (...keys: string[]) => RouterBuilder;
+    middlewares: (...middlewares: any[]) => RouterBuilder;
 }

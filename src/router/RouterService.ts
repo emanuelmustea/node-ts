@@ -11,8 +11,9 @@ export class RouterService {
 
     public configureRoutes = ({app, expressRouter}: {app: Express, expressRouter: Router}): void => {
         const { buildRoute } = this.routerAdapter;
-        buildRoute({Router: PlaceholderRouter, app, expressRouter});
 
-        app.use("*", (_req, res)=> res.json({error:true}));
+        buildRoute({basePath: "/", Router: PlaceholderRouter, app, expressRouter});
+
+        app.use((_req, res)=> res.status(404).json({error:'not_found'}));
     }
 }

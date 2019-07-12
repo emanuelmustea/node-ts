@@ -1,30 +1,28 @@
 import "reflect-metadata";
-import { Express, default as express, Router } from 'express';
-import { ConfigService, IntConfig } from './config/ConfigService';
-import { container, injectable } from 'tsyringe';
+
+import { default as express, Express, Router} from "express";
+import { container, injectable } from "tsyringe";
+import { ConfigService, IConfig } from "./config/ConfigService";
 import { RouterService } from "./router/RouterService";
 
 @injectable()
 class Server {
-    app: Express;
-    config: IntConfig;
+    private app: Express;
+    private config: IConfig;
 
     constructor(
         private configService: ConfigService,
-        private router: RouterService
+        private router: RouterService,
     ) {
         this.config = this.configService.getConfig();
         this.app = express();
-        this.startApp();
         this.router.configureRoutes({app: this.app, expressRouter: Router()});
+        this.startApp();
      }
 
-    private startApp = () : void => {
+    private startApp = (): void => {
         const { app } = this;
-        app.listen(this.config.port, () => console.log(`App started on port *:${this.config.port}`));
-    }
-    private configRoutes = () : void => {
-       
+        app.listen(this.config.port, () => console.info(`App started on port *:${this.config.port}`));
     }
 }
 container.resolve(Server);

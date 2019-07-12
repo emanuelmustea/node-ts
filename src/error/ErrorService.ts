@@ -2,7 +2,7 @@ import { injectable } from "tsyringe";
 
 @injectable()
 export class ErrorService {
-    getError(code: number){
+    public getError(code: number) {
         return {code};
     }
 }

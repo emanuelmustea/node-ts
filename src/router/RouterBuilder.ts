@@ -8,7 +8,7 @@ export class RouterBuilder {
     put: any;
     patch: any;
     delete: any;
-    constructor(state: any = {}) { 
+    constructor(state: any = {}) {
         this.state = state;
         const methods = ['get', 'post', 'put', 'patch', 'delete'];
         for(const method of methods){
@@ -27,5 +27,11 @@ export class RouterBuilder {
     }
     build = () => {
         return this.state;
+    }
+    query = (...keys: string[]) => {
+        return new RouterBuilder({ ...this.state, query : [...(this.state.query || []), ...keys] });
+    };
+    middlewares = (...middlewares: any[]) => {
+      return new RouterBuilder({...this.state, middlewares});
     }
 }

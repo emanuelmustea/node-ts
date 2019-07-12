@@ -1,15 +1,20 @@
-import {injectable} from "tsyringe";
+import {singleton} from "tsyringe";
 
-export interface IntConfig {
+export interface IConfig {
     port: number;
 }
 
-@injectable()
+@singleton()
 export class ConfigService {
-    constructor() {}
-    public getConfig(): IntConfig {
-        return {
-            port: 3000
-        }
+
+    private config: IConfig;
+
+    constructor() {
+        this.config = {
+            port: 3000,
+        };
+    }
+    public getConfig(): IConfig {
+        return this.config;
     }
 }

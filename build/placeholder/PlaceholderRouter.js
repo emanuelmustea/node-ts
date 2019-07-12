@@ -13,7 +13,14 @@ var tsyringe_1 = require("tsyringe");
 var RouterBuilder_1 = require("../router/RouterBuilder");
 var PlaceholderRouter = (function () {
     function PlaceholderRouter() {
-        this.login = new RouterBuilder_1.RouterBuilder().path("/login").get(function () { return console.log("get called"); });
+        this.login = new RouterBuilder_1.RouterBuilder()
+            .query("count")
+            .middlewares("print")
+            .path("/login")
+            .get(function (_a) {
+            var count = _a.count;
+            return { got_called: count };
+        });
     }
     PlaceholderRouter = __decorate([
         tsyringe_1.injectable(),

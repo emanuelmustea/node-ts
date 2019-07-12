@@ -19,6 +19,26 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
+var __spread = (this && this.__spread) || function () {
+    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
+    return ar;
+};
 var __values = (this && this.__values) || function (o) {
     var m = typeof Symbol === "function" && o[Symbol.iterator], i = 0;
     if (m) return m.call(o);
@@ -41,6 +61,20 @@ var RouterBuilder = (function () {
         };
         this.build = function () {
             return _this.state;
+        };
+        this.query = function () {
+            var keys = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                keys[_i] = arguments[_i];
+            }
+            return new RouterBuilder_1(__assign({}, _this.state, { query: __spread((_this.state.query || []), keys) }));
+        };
+        this.middlewares = function () {
+            var middlewares = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                middlewares[_i] = arguments[_i];
+            }
+            return new RouterBuilder_1(__assign({}, _this.state, { middlewares: middlewares }));
         };
         this.state = state;
         var methods = ['get', 'post', 'put', 'patch', 'delete'];

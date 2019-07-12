@@ -21,8 +21,8 @@ var RouterService = (function () {
         this.configureRoutes = function (_a) {
             var app = _a.app, expressRouter = _a.expressRouter;
             var buildRoute = _this.routerAdapter.buildRoute;
-            buildRoute({ Router: PlaceholderRouter_1.PlaceholderRouter, app: app, expressRouter: expressRouter });
-            app.use("*", function (_req, res) { return res.json({ error: true }); });
+            buildRoute({ basePath: "/", Router: PlaceholderRouter_1.PlaceholderRouter, app: app, expressRouter: expressRouter });
+            app.use(function (_req, res) { return res.status(404).json({ error: 'not_found' }); });
         };
     }
     RouterService = __decorate([
