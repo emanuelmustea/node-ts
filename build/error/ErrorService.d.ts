@@ -1,5 +1,5 @@
+import { ErrorMessage } from "./ErrorMessage";
 export declare class ErrorService {
-    getError(code: number): {
-        code: number;
-    };
+    getErrorMessage(code?: number): ErrorMessage;
+    private getMessage;
 }

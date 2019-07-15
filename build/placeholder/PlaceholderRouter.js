@@ -15,11 +15,10 @@ var PlaceholderRouter = (function () {
     function PlaceholderRouter() {
         this.login = new RouterBuilder_1.RouterBuilder()
             .query("count")
-            .middlewares("print")
-            .path("/login")
+            .path("/login/:count")
             .get(function (_a) {
             var count = _a.count;
-            return { got_called: count };
+            return { status: 418, body: { inRouter: true, got_called: count } };
         });
     }
     PlaceholderRouter = __decorate([

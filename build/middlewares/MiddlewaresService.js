@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var tsyringe_1 = require("tsyringe");
 var MiddlewaresService = (function () {
     function MiddlewaresService() {
-        this.print = function (req, _res, next) {
+        this.middleware = function (req, _res, next) {
             if (req.query.test) {
                 console.log(req.query.test);
                 return next();

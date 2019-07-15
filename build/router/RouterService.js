@@ -11,7 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var tsyringe_1 = require("tsyringe");
 var RouterAdapter_1 = require("./RouterAdapter");
-var PlaceholderRouter_1 = require("../placeholder/PlaceholderRouter");
 var ErrorService_1 = require("../error/ErrorService");
 var RouterService = (function () {
     function RouterService(routerAdapter, errorService) {
@@ -21,8 +20,11 @@ var RouterService = (function () {
         this.configureRoutes = function (_a) {
             var app = _a.app, expressRouter = _a.expressRouter;
             var buildRoute = _this.routerAdapter.buildRoute;
-            buildRoute({ basePath: "/", Router: PlaceholderRouter_1.PlaceholderRouter, app: app, expressRouter: expressRouter });
-            app.use(function (_req, res) { return res.status(404).json({ error: 'not_found' }); });
+            buildRoute({ basePath: "/", Router: {}, app: app, expressRouter: expressRouter });
+            app.use(function (err, _req, res, _next) {
+                var error = err.statusCode ? err : _this.errorService.getErrorMessage(0);
+                return res.status(error.statusCode).json(error);
+            });
         };
     }
     RouterService = __decorate([

@@ -80,11 +80,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var tsyringe_1 = require("tsyringe");
 var url_1 = __importDefault(require("url"));
-var MiddlewaresService_1 = require("../middlewares/MiddlewaresService");
 var RouterAdapter = (function () {
-    function RouterAdapter(middlewaresService) {
+    function RouterAdapter() {
         var _this = this;
-        this.middlewaresService = middlewaresService;
         this.buildRoute = function (_a) {
             var basePath = _a.basePath, Router = _a.Router, app = _a.app, expressRouter = _a.expressRouter;
             var routerInstance = tsyringe_1.container.resolve(Router);
@@ -107,17 +105,18 @@ var RouterAdapter = (function () {
             return (__assign({}, queryParams, (_a = {}, _a[param] = query[param], _a)));
         }, {}); };
         this.resolveMiddlewares = function (middlewares) {
-            return middlewares.map(function (middleware) { return _this.middlewaresService[middleware]; });
+            return middlewares.map(function (middleware) { return tsyringe_1.container.resolve(middleware).middleware; });
         };
         this.prepareExpressFunction = function (props) { return function (req, res, next) {
             (function () { return __awaiter(_this, void 0, void 0, function () {
-                var controllerParams, controllerResponse, e_1;
+                var controllerParams, filteredQuery, controllerResponse, body, headers, status_1, e_1;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
                             controllerParams = __assign({ req: req }, req.params, props);
                             if (props.query.length) {
-                                controllerParams.query = this.filterQuery(req.query, props.query);
+                                filteredQuery = this.filterQuery(req.query, props.query);
+                                controllerParams = __assign({}, filteredQuery, controllerParams);
                             }
                             if (['put', 'patch', 'post'].includes(props.method)) {
                                 controllerParams.body = req.body || {};
@@ -128,15 +127,14 @@ var RouterAdapter = (function () {
                             return [4, props.controller(controllerParams)];
                         case 2:
                             controllerResponse = _a.sent();
-                            console.log("response is", controllerResponse);
-                            if (controllerResponse.isHTTPResponse) {
-                                console.log("requested is HTTP");
+                            if ((controllerResponse || {}).isHTTPResponse) {
+                                body = controllerResponse.body, headers = controllerResponse.headers, status_1 = controllerResponse.status;
+                                return [2, res.set(headers).status(status_1).json(body)];
                             }
                             if (!controllerResponse) {
-                                res.status(204).send();
+                                return [2, res.status(204).send()];
                             }
-                            res.status(200).json(controllerResponse);
-                            return [3, 4];
+                            return [2, res.status(200).json(controllerResponse)];
                         case 3:
                             e_1 = _a.sent();
                             next(e_1);
@@ -151,9 +149,9 @@ var RouterAdapter = (function () {
             return resolvedMiddlewares.map(function (middleware) {
                 return function (req, res, next) {
                     var query = props.query ? _this.filterQuery(req.query, props.query) : {};
-                    return middleware(__assign({ req: req,
+                    return middleware(__assign({}, query, req.params, { req: req,
                         res: res,
-                        next: next }, query, req.params));
+                        next: next }));
                 };
             });
         };
@@ -168,7 +166,7 @@ var RouterAdapter = (function () {
     }
     RouterAdapter = __decorate([
         tsyringe_1.injectable(),
-        __metadata("design:paramtypes", [MiddlewaresService_1.MiddlewaresService])
+        __metadata("design:paramtypes", [])
     ], RouterAdapter);
     return RouterAdapter;
 }());

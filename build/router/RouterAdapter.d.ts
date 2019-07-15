@@ -1,8 +1,6 @@
 import { Express, Router } from "express";
-import { MiddlewaresService } from "../middlewares/MiddlewaresService";
 export declare class RouterAdapter {
-    private middlewaresService;
-    constructor(middlewaresService: MiddlewaresService);
+    constructor();
     buildRoute: ({ basePath, Router, app, expressRouter }: {
         basePath: string;
         Router: any;

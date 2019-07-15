@@ -1,11 +1,11 @@
 import { Express, Router, Request, Response, NextFunction } from "express";
 import { container, injectable } from "tsyringe";
 import url from "url"
-import { MiddlewaresService } from "../middlewares/MiddlewaresService";
+import { IMiddleware } from "../middlewares/IMiddleware";
 
 @injectable()
 export class RouterAdapter {
-    constructor(private middlewaresService: MiddlewaresService) {}
+    constructor() {}
     public buildRoute = ({
         basePath,
         Router,
@@ -36,49 +36,53 @@ export class RouterAdapter {
         ...queryParams,
         [param]: query[param]
     }), {});
-    private resolveMiddlewares = (middlewares:any[]) => {
-      return middlewares.map(middleware => this.middlewaresService[middleware])
+    private resolveMiddlewares = (middlewares: IMiddleware[]) => {
+      return middlewares.map((middleware: any) => (container.resolve(middleware) as IMiddleware).middleware);
     }
     private prepareExpressFunction = (props: any): any => (req: Request, res: Response, next: NextFunction): void => {
         (async () => {
-            const controllerParams = {
+            let controllerParams = {
                 req,
                 ...req.params,
                 ...props
             };
             if (props.query.length) {
-                controllerParams.query = this.filterQuery(req.query, props.query);
+              const filteredQuery = this.filterQuery(req.query, props.query);
+              controllerParams = {
+                ...filteredQuery,
+                ...controllerParams
+              }
             }
             if (['put', 'patch', 'post'].includes(props.method)) {
                 controllerParams.body = req.body || {};
             }
             try {
                 const controllerResponse = await props.controller(controllerParams);
-                console.log("response is", controllerResponse);
-                if (controllerResponse.isHTTPResponse) {
-                    console.log("requested is HTTP");
+                if ((controllerResponse || {}).isHTTPResponse) {
+                    const {body, headers, status} = controllerResponse;
+                    return res.set(headers).status(status).json(body);
                 }
                 if (!controllerResponse) {
-                    res.status(204).send();
+                    return res.status(204).send();
                 }
-                res.status(200).json(controllerResponse);
+                return res.status(200).json(controllerResponse);
             } catch (e) {
                 next(e);
             }
         })();
     }
-    private prepareExpressMiddlewares = (props: any) =>{
+    private prepareExpressMiddlewares = (props: any) => {
       const resolvedMiddlewares = this.resolveMiddlewares(props.middlewares || []);
       return resolvedMiddlewares.map(
-          middleware =>
+          (middleware: any) =>
           (req: Request, res: Response, next: NextFunction) =>{
             const query = props.query ? this.filterQuery(req.query, props.query) : {};
             return middleware({
+              ...query,
+              ...req.params,
                 req,
                 res,
-                next,
-                ...query,
-                ...req.params
+                next
             })
           }
       )
@@ -96,7 +100,7 @@ export class RouterAdapter {
         const controller = this.prepareExpressFunction(props);
         const middlewares = this.prepareExpressMiddlewares(props);
         const relativePath = url.resolve(basePath, props.path);
-        
+
         expressRouter[props.method](relativePath, ...middlewares, controller);
         console.info(`Added route ${props.method.toUpperCase()} ${relativePath}`);
     }
