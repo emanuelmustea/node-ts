@@ -46,7 +46,7 @@ export class RouterAdapter {
                 ...req.params,
                 ...props
             };
-            if (props.query.length) {
+            if (props.query && props.query.length) {
               const filteredQuery = this.filterQuery(req.query, props.query);
               controllerParams = {
                 ...filteredQuery,

@@ -1,6 +1,4 @@
-import { injectable } from "tsyringe";
 
-@injectable()
 export class RouterBuilder {
     state: any;
     get:any;
