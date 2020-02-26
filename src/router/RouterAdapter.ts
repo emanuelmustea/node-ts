@@ -1,41 +1,50 @@
-import { Express, Router, Request, Response, NextFunction } from "express";
+import { Express, NextFunction, Request, Response, Router } from "express";
 import { container, injectable } from "tsyringe";
-import url from "url"
+import url from "url";
 import { IMiddleware } from "../middlewares/IMiddleware";
 
 @injectable()
 export class RouterAdapter {
-    constructor() {}
     public buildRoute = ({
         basePath,
         Router,
         app,
-        expressRouter
+        expressRouter,
     }: {
         basePath: string,
         Router: any,
         app: Express,
-        expressRouter: Router
+        expressRouter: Router,
     }): void => {
         const routerInstance = container.resolve(Router) as Router;
-        for (const route in routerInstance) {
-            const buildFunction = routerInstance[route].build;
-            if (typeof buildFunction !== "function") {
+        for (const propertyKey in routerInstance) {
+            const controller = routerInstance[propertyKey];
+            if (typeof controller !== "function") {
                 continue;
             }
-            const routeProps = buildFunction();
+            console.log("controller is", propertyKey, controller);
+            const metadataKeys = Reflect.getMetadataKeys(routerInstance, propertyKey);
+            console.log("keys are", metadataKeys);
+            const keys = ["path", "method", "query"];
+            const metadataFilteredKeys = metadataKeys.filter((key) => keys.includes(key));
+            const routeProps = metadataFilteredKeys.reduce((metadataValues, currentMetadataKey) => {
+                const keyValue = Reflect.getMetadata(currentMetadataKey, routerInstance, propertyKey);
+                return {...metadataValues, [currentMetadataKey]: keyValue};
+            }, {});
+            // console.log("values", getValues);
             this.connectRouteToExpress({
-                props: routeProps,
+                basePath,
                 expressRouter,
-                basePath
-            })
+                props: routeProps,
+            });
         }
         app.use("/", expressRouter);
     }
-    private filterQuery = (query: any, keys: string[]) => keys.reduce((queryParams: Object, param: string) => ({
+
+    private filterQuery = (query: any, keys: string[]) => keys.reduce((queryParams: object, param: string) => ({
         ...queryParams,
-        [param]: query[param]
-    }), {});
+        [param]: query[param],
+    }), {})
     private resolveMiddlewares = (middlewares: IMiddleware[]) => {
       return middlewares.map((middleware: any) => (container.resolve(middleware) as IMiddleware).middleware);
     }
@@ -44,16 +53,16 @@ export class RouterAdapter {
             let controllerParams = {
                 req,
                 ...req.params,
-                ...props
+                ...props,
             };
             if (props.query && props.query.length) {
               const filteredQuery = this.filterQuery(req.query, props.query);
               controllerParams = {
                 ...filteredQuery,
-                ...controllerParams
-              }
+                ...controllerParams,
+              };
             }
-            if (['put', 'patch', 'post'].includes(props.method)) {
+            if (["put", "patch", "post"].includes(props.method)) {
                 controllerParams.body = req.body || {};
             }
             try {
@@ -75,27 +84,27 @@ export class RouterAdapter {
       const resolvedMiddlewares = this.resolveMiddlewares(props.middlewares || []);
       return resolvedMiddlewares.map(
           (middleware: any) =>
-          (req: Request, res: Response, next: NextFunction) =>{
+          (req: Request, res: Response, next: NextFunction) => {
             const query = props.query ? this.filterQuery(req.query, props.query) : {};
             return middleware({
               ...query,
               ...req.params,
+                next,
                 req,
                 res,
-                next
-            })
-          }
-      )
+            });
+          },
+      );
     }
 
     private connectRouteToExpress = ({
         props,
         expressRouter,
-        basePath
+        basePath,
     }: {
         props: any,
         expressRouter: Router,
-        basePath: string
+        basePath: string,
     }) => {
         const controller = this.prepareExpressFunction(props);
         const middlewares = this.prepareExpressMiddlewares(props);

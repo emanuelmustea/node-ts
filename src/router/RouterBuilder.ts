@@ -1,35 +1,34 @@
 
 export class RouterBuilder {
-    state: any;
-    get:any;
-    post: any;
-    put: any;
-    patch: any;
-    delete: any;
+    public state: any;
+    public get: any;
+    public post: any;
+    public put: any;
+    public patch: any;
+    public delete: any;
     constructor(state: any = {}) {
         this.state = state;
-        const methods = ['get', 'post', 'put', 'patch', 'delete'];
-        for(const method of methods){
+        const methods = ["get", "post", "put", "patch", "delete"];
+        for (const method of methods) {
             this[method] = (controller?: (any)) => {
-                if(controller){
+                if (controller) {
                     return new RouterBuilder({...this.state, method, controller});
-                }
-                else{
+                } else {
                     return new RouterBuilder({...this.state});
                 }
-            }
+            };
         }
     }
-    path = (path: String) => {
-        return new RouterBuilder({...this.state, path})
+    public path = (path: string) => {
+        return new RouterBuilder({...this.state, path});
     }
-    build = () => {
+    public build = () => {
         return this.state;
     }
-    query = (...keys: string[]) => {
+    public query = (...keys: string[]) => {
         return new RouterBuilder({ ...this.state, query : [...(this.state.query || []), ...keys] });
-    };
-    middlewares = (...middlewares: any[]) => {
+    }
+    public middlewares = (...middlewares: any[]) => {
       return new RouterBuilder({...this.state, middlewares});
     }
 }

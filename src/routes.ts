@@ -1,10 +1,10 @@
-import { HelloWorldRouter } from "./hello-world/HelloWorldRouter";
+import { HelloWorldController } from "./hello-world/HelloWorldController";
 
-interface Route{
-  basePath: string,
-  router: any
-};
+interface IRoute {
+  basePath: string;
+  router: any;
+}
 
-export const Routes: Route[] = [
-  { basePath: "/", router: HelloWorldRouter }
-]
+export const Routes: IRoute[] = [
+  { basePath: "/", router: HelloWorldController }
+];
