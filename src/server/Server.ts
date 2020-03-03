@@ -1,24 +1,26 @@
 import { container } from "tsyringe";
 
-export interface RouterAdapter {
-    build: (_routers: any[]) => void;
-    getInstance: () => any;
-}
-
-export abstract class SocketEngine {
-    build(): void {}
-}
-
 export interface Server {
-    routers: any[];
-    models: any[];
-    socket: typeof SocketEngine;
-    adapter: any;
+  controllers: any[];
+  models: any[];
+  adapter: any;
 }
 
 export const Server = (metadata: Server): ClassDecorator => {
-    return (target: any): void => {
-        const adapterInstance = container.resolve(metadata.adapter);
-        console.log('used class decoartor for Server', target, "with metadata", metadata);
-    };
-} 
+  return (): void => {
+    if (!metadata.adapter) {
+      throw new Error("The app couldn't start. Please select an adapter.");
+    }
+    const adapterInstance: any = container.resolve(metadata.adapter);
+    if (!adapterInstance.addControllers) {
+      throw new Error(
+        "The method 'addControllers' is missing from the added adapter"
+      );
+    }
+    if (!adapterInstance.build) {
+      throw new Error("The method 'build' is missing from the added adapter");
+    }
+    adapterInstance.addControllers(metadata.controllers);
+    adapterInstance.build();
+  };
+};

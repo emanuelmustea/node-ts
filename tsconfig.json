@@ -7,7 +7,6 @@
     "outDir": "./build",
     "removeComments": true,
     "downlevelIteration": true,
-    "strict": true,
     "noUnusedParameters": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
@@ -16,7 +15,5 @@
     "suppressImplicitAnyIndexErrors": true,
     "noImplicitAny": false
   },
-  "include": [
-    "src/**/*"
-  ],
+  "include": ["src/**/*"]
 }

@@ -6,7 +6,8 @@
     "no-console": false,
     "forin": false,
     "no-shadowed-variable": false,
-    "trailing-comma": false
+    "trailing-comma": false,
+    "interface-name": false
   },
   "rulesDirectory": []
 }
