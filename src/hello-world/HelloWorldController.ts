@@ -1,5 +1,5 @@
 import { injectable } from "tsyringe";
-import { Path, RequestMethod } from "../router/RestController";
+import { Path, RequestMethod } from "../router/RouterDecorators";
 
 @injectable()
 export class HelloWorldController {

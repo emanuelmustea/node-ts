@@ -1,7 +1,8 @@
-import { IRouterMetadata, RequestMethods } from "./IRestController";
+import { RequestMethods } from "./IRouterDecorators";
 
-export const Router = (metadata: IRouterMetadata): ClassDecorator => (target: any) => {
-  Reflect.defineMetadata("custom:metadata", metadata, target);
+export const RestController = (path: string): ClassDecorator => (target: any) => {
+  Reflect.defineMetadata("path", path, target);
+  Reflect.defineMetadata("isRestController", true, target);
 };
 
 export const Path = (path: string): MethodDecorator => (
