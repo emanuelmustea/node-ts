@@ -18,10 +18,11 @@ export class HelloWorldController {
     return { message: "Hello World" };
   }
 
-  @Path("/error")
+  @Path("/error/:number")
   @RequestMethod("all")
-  public throwError() {
-    throw this.errorService.getErrorMessage(10)
+  public throwError({ number }) {
+    return { number };
+    // throw this.errorService.getErrorMessage(10)
   }
 
 }

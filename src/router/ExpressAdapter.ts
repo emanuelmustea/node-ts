@@ -65,20 +65,20 @@ export class ExpressAdapter {
   private getExpressHandler(controllerInstance: Controller, controllerMethod: Controller[any]): RequestHandler{
     return (req: Request, res: Response, next: NextFunction): void => {
       const methodArguments = {
-        body: {req},
-        query: {req},
-        path: {req}
+       ...req.params,
+       ...req.body 
       };
-      try{
+      
         (async () => {
+          try{
           const responseObject = await controllerMethod.call(controllerInstance, methodArguments);
           res.status(205).json(responseObject);
+          }
+          catch(e){
+            console.log(e);
+            next(e);
+          }
         })();
-      }
-      catch(e){
-        next(e);
-      }
-
     }
   }
 
