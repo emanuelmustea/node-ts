@@ -1,4 +1,4 @@
-import { RequestMethods } from "./IRouterDecorators";
+import { RequestMethods } from "./RouterTypes";
 
 export const RestController = (path: string): ClassDecorator => (target: any) => {
   Reflect.defineMetadata("path", path, target);
@@ -16,12 +16,5 @@ export const RequestMethod = (method: RequestMethods): MethodDecorator => (
   target: any,
   propertyKey: string | symbol,
 ) => {
-  Reflect.defineMetadata("method", method, target, propertyKey);
-};
-
-export const Query = (...keys: string[]): MethodDecorator => (
-  target: any,
-  propertyKey: string | symbol,
-) => {
-  Reflect.defineMetadata("query", keys, target, propertyKey);
+  Reflect.defineMetadata("requestMethod", method, target, propertyKey);
 };

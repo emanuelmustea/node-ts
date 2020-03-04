@@ -1,14 +1,15 @@
-import { singleton } from "tsyringe";
+import { singleton, container, InjectionToken } from "tsyringe";
 import { ConfigService, IConfig } from "../config/ConfigService";
-import { Router } from "./IRouterDecorators";
+import { Controller, MethodMetadata } from "./RouterTypes";
 
-import { default as express, Express } from "express";
+import { default as express, Express, RequestHandler, NextFunction, Request, Response } from "express";
 import { ErrorService } from "../error/ErrorService";
+
 @singleton()
 export class ExpressAdapter {
   private app: Express;
   private config: IConfig;
-  private controllers: Router[];
+  private controllers: InjectionToken[];
 
   constructor(
     private configService: ConfigService,
@@ -18,7 +19,7 @@ export class ExpressAdapter {
     this.app = express();
   }
 
-  public addControllers(controllers: Router[]): void {
+  public addControllers(controllers: InjectionToken[]): void {
     this.controllers = controllers;
   }
 
@@ -36,17 +37,62 @@ export class ExpressAdapter {
     }
   }
 
-  private registerController(controller: any): void {
-    const routerMetadata = this.getRouterMetadata(controller);
-    if (!routerMetadata.isRestController) {
+  private registerController(controller: any | InjectionToken): void {
+    const controllerMetadata = this.getMetadataObject(controller);
+    if (!controllerMetadata.isRestController) {
       throw new Error(
-        `Skipped '${controller.name}'! Controllers that are not marked with the RestController decorator will be skipped`
+        `Skipped '${controller.name}'! Controllers not marked with the RestController decorator will throw an error`
       );
     }
-
-    for (const method of controller) {
-      console.log("we have method", method);
+    const controllerInstance: Controller = <Controller>container.resolve(controller);
+    for (const methodName in controllerInstance) {
+      const methodMetadata: MethodMetadata = this.getMetadataObject(controllerInstance, methodName);
+      this.attachMethodToExpress(controllerInstance, methodName, methodMetadata);
     }
+  }
+
+  private attachMethodToExpress(controllerInstance: Controller, methodName: string, methodMetadata: MethodMetadata): void{
+    const methodMetadataHasErrors = this.checkMethodMetadata(methodName, methodMetadata);
+    if(methodMetadataHasErrors){
+      return;
+    }
+    const controllerMethod = controllerInstance[methodName];
+    const expressHandler = this.getExpressHandler(controllerInstance, controllerMethod);
+    this.app[methodMetadata.requestMethod](methodMetadata.path, expressHandler);
+    console.info(`Added route ${methodMetadata.requestMethod.toUpperCase()} ${methodMetadata.path}`);
+  }
+
+  private getExpressHandler(controllerInstance: Controller, controllerMethod: Controller[any]): RequestHandler{
+    return (req: Request, res: Response, next: NextFunction): void => {
+      const methodArguments = {
+        body: {req},
+        query: {req},
+        path: {req}
+      };
+      try{
+        (async () => {
+          const responseObject = await controllerMethod.call(controllerInstance, methodArguments);
+          res.status(205).json(responseObject);
+        })();
+      }
+      catch(e){
+        next(e);
+      }
+
+    }
+  }
+
+  private checkMethodMetadata(methodName: string, methodMetadata: MethodMetadata ): boolean{
+    if(methodMetadata["design:type"] !== Function){
+      return true;
+    }
+    if(!methodMetadata.path){
+      throw new Error(`The method "${methodName}" doesn't have any path attached. Use the @Path decorator.`)
+    }
+    if(!methodMetadata.requestMethod){
+      throw new Error(`The method "${methodName}" doesn't have any request method attached. Use the @RequestMethod decorator.`)
+    }
+    return false;
   }
 
   private startApp(): void {
@@ -63,12 +109,12 @@ export class ExpressAdapter {
     });
   }
 
-  private getRouterMetadata(router: any): { [key: string]: any } {
-    const metadataKeys = Reflect.getMetadataKeys(router);
+  private getMetadataObject(...targetKeys: [Object, (string | symbol)?]): { [key: string]: any } {
+    const metadataKeys = Reflect.getMetadataKeys(...targetKeys);
     return metadataKeys.reduce(
       (metadata, metadataKey: string) => ({
         ...metadata,
-        [metadataKey]: Reflect.getMetadata(metadataKey, router)
+        [metadataKey]: Reflect.getMetadata(metadataKey, ...targetKeys)
       }),
       {}
     );
