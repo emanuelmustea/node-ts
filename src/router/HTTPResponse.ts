@@ -8,6 +8,8 @@ export interface IHTTPResponse{
 export class HTTPResponse implements IHTTPResponse{
   public isHTTPResponse: boolean = true;
   headers = {};
+  status = 200;
+  body = {};
   
   constructor(properties: IHTTPResponse){
     Object.assign(this, properties)

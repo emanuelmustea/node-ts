@@ -2,8 +2,9 @@ import { singleton, container, InjectionToken } from "tsyringe";
 import { ConfigService, IConfig } from "../config/ConfigService";
 import { Controller, MethodMetadata } from "./RouterTypes";
 
-import { default as express, Express, RequestHandler, NextFunction, Request, Response } from "express";
+import { default as express, Express, RequestHandler, NextFunction, Request, Response, response } from "express";
 import { ErrorService } from "../error/ErrorService";
+import { HTTPResponse } from "./HTTPResponse";
 
 @singleton()
 export class ExpressAdapter {
@@ -72,10 +73,17 @@ export class ExpressAdapter {
         (async () => {
           try{
           const responseObject = await controllerMethod.call(controllerInstance, methodArguments);
-          res.status(205).json(responseObject);
+            if(responseObject instanceof HTTPResponse){
+              res.status(responseObject.status).set(responseObject.headers).json(responseObject.body);
+              return;
+            }
+            if(!responseObject){
+              res.status(204).send();
+              return;
+            }
+            res.status(200).json(responseObject);
           }
           catch(e){
-            console.log(e);
             next(e);
           }
         })();
