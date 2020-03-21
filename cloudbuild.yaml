@@ -1,0 +1,20 @@
+steps:
+    - name: "gcr.io/cloud-builders/npm"
+      args: ["install"]
+      dir: "./"
+    - name: "gcr.io/cloud-builders/npm"
+      args: ["run", "test"]
+      dir: "./"
+    - name: "gcr.io/cloud-builders/npm"
+      args: ["run", "build"]
+      dir: "./"
+    - name: "gcr.io/cloud-builders/gcloud"
+      args:
+          - functions
+          - deploy
+          - backend_function
+          - --source=./
+          - --trigger-http
+          - --runtime=nodejs10
+          - --memory=${_FUNCTION_MEMORY}
+          - --update-env-vars=[${_ENV_VARIABLES}]
