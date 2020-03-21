@@ -11,10 +11,12 @@ export class FirebaseService {
     constructor(private configService: ConfigService) {
         const config = this.configService.getConfig();
         if (config.environment === "PRODUCTION") {
+            console.log("Using firebase production environment");
             admin.initializeApp({
                 credential: admin.credential.applicationDefault()
             });
         } else {
+            console.log("Using firebase local environment");
             admin.initializeApp({
                 credential: admin.credential.cert(serviceAccount as admin.ServiceAccount)
             });
