@@ -13,6 +13,7 @@ export class ConfigService {
 
     constructor() {
         const { environment } = process.env;
+        console.log("environment", environment);
         this.config = {
             port: 3000,
             environment: environment || "DEVELOPMENT",
