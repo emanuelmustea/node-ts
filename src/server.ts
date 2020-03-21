@@ -1,6 +1,6 @@
 import { app } from "firebase-admin";
 import "reflect-metadata";
-import { container, injectable } from "tsyringe";
+import { injectable } from "tsyringe";
 import { AuthenticationController } from "./authentication/AuthenticationController";
 import { FirebaseService } from "./firebase/FirebaseService";
 import { ExpressAdapter } from "./router/ExpressAdapter";
@@ -13,11 +13,5 @@ import { UserController } from "./user/UserController";
 })
 @injectable()
 export class AppServer {
-    constructor(protected firebaseService: FirebaseService, private expressAdapter: ExpressAdapter) {}
-
-    public getApp() {
-        return this.expressAdapter.ejectRouter();
-    }
+    constructor(protected firebaseService: FirebaseService) {}
 }
-
-export const App = container.resolve(AppServer).getApp();
