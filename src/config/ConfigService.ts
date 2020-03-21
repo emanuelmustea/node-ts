@@ -15,7 +15,7 @@ export class ConfigService {
         const { environment } = process.env;
         console.log("environment", environment);
         this.config = {
-            port: 3000,
+            port: Number(process.env.PORT) || 3000,
             environment: environment || "DEVELOPMENT",
             saltRounds: 10,
             privateKey: "fake key"
