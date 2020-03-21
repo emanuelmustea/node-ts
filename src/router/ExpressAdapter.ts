@@ -132,6 +132,9 @@ export class ExpressAdapter {
     }
 
     private addErrorHandling(): void {
+        this.app.all("**", () => {
+            throw this.errorService.getErrorMessage(10);
+        });
         this.app.use((err: any, _req: any, res: any, _next: any) => {
             const error = err.statusCode ? err : this.errorService.getErrorMessage(0);
             return res.status(error.statusCode).json(error);
