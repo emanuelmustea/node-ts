@@ -2,4 +2,4 @@ runtime: nodejs10
 
 instance_class: F1
 
-entrypoint: "node ./build/server.js"
+entrypoint: npm run prod

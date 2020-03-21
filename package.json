@@ -6,7 +6,8 @@
     "scripts": {
         "start": "tsc-watch --onSuccess \"node ./build/server.js\" --onFailure \"echo Compilation Failed\" --compiler typescript/bin/tsc",
         "build": "tsc",
-        "test": "echo 'No test found'"
+        "test": "echo 'No test found'",
+        "prod": "node ./build/server.js"
     },
     "repository": {
         "type": "git",
