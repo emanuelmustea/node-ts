@@ -12,9 +12,10 @@ export class ConfigService {
     private config: IConfig;
 
     constructor() {
+        const { environment } = process.env;
         this.config = {
             port: 3000,
-            environment: "DEVELOPMENT",
+            environment: environment || "DEVELOPMENT",
             saltRounds: 10,
             privateKey: "fake key"
         };
