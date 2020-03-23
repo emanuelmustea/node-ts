@@ -19,11 +19,10 @@ export class UserDb {
     }
 
     public async getUserByEmail(email: string): Promise<User> {
-        const users = await this.firebaseService.getRecord("users", ["email", "==", email]).catch(() => {
-            throw this.errorService.getErrorMessage(10);
-        });
+        const users = await this.firebaseService.getRecord("users", ["email", "==", email]);
+
         if (!users.length) {
-            throw this.errorService.getErrorMessage(10);
+            return null;
         }
 
         const { 0: user } = users;

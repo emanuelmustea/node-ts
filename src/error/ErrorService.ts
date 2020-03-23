@@ -47,7 +47,7 @@ export class ErrorService {
                 detailedMessage: "You don't ahve enough permissions to access the requested resource"
             },
             {
-                statusCode: 400,
+                statusCode: 422,
                 code: 40,
                 message: "Invalid request parameters"
             }
