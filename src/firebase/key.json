@@ -1,12 +1,3 @@
-{
-    "type": "service_account",
-    "project_id": "static-website-test-999999",
-    "private_key_id": "ee103770fd14e66bd272396292804e8323c6e2b9",
-    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDAGNamwV7wq0Qf\nsLSGvRsVM/p6oyWOLRZtDJHAqvkyJfwW4y0eMbDlJC1EP0l7PjSj0xrZn51bPS3q\nbbRQqWWZlSef/dhtUX4tvcuQW9NobeH3RuZC0IAisE8+9ZplwR5P/pC0OIdehzi4\nk8gwsgYguqK3Zw9JxQVmWJziVYOQdDXnoYT0xtYn6+pfc6ZtAma6R92uWRXG+8wd\nS4Sjyv5ABsFI7CpdBZBbOn0PmqMti30JgTsKBqKkE8vqq9Vbaewe3fXDOycwTazw\nuugQIuK2POJHnextkd5KBJ0M1mAk4RoP1/avWxD6VCrJFHROdvh469i6bTLPSCj/\nUlygK8zpAgMBAAECggEAKBbG7SQb2SQU4nwxIJFkjoc7dc6IbuRv8rAV1tyXhuSw\neGJOryd1oExtefmvLx4rRCkxSEtsPndFFtBwOgkwH94l19jVCvNf3tHmIqlXNEsC\nRmWwdi8nHpYm45/D6gpkdhNNRZ8qeQrFRpfoxmjQqJHqlVXXtfB9EP/bNczc2Q9a\nNzu5sEKOa5Q3ze+vkAx4PFHmhTpHPZat6s3ah3mLj//DFYvFA7m4X4ZDmA+VCeue\nxzDXzTqvu8rNdp3aTxJxjP5+lJhWuzY09VOwPR8XEV++hkQCT7pNK88TOZqFlHsZ\n/QMIk2r7BwpUsWrVX5DDIiyeNwfT/p+DA7aVvSsf9QKBgQD8/18mGHSgCurYBgmL\nGQwJJ7yS2LpwnqTaOC2/GwoTfrtoqlhw7qaA4HjZlT/Z3mmAdGTPvwh8YqUtCDwy\nqf7OwxGHznKzgDFYxwwBV6rDqggfbKdbTpayC1TiHNx5bo5cPtjYRyu1lOCGoiN2\nKDhbmN03KxNnQ8XYbt6qvXFL4wKBgQDCYHIe2MwzHa9OZG4QxrgWPmf5rDhh46EE\n/x6IZYHM++SV0fDVbF+ewgCQlfp7kNGs3jECMUjQgGNPeg+ic3yV0QtidkD8okxa\n1cKjP1Kzi0h4/uQQKXhgXwaZBvdQlCHXqchqQsIYJMtpruVV7WDL83jO+a8z7J/9\nIssUI4M1wwKBgDeIEil5erfaTZvnD1cxwzuLNlABNEMd/09Kv3fQBpEq4xXhNhJr\nv65QFxajNOWsdPnWEn6rDsDGojzVLulr+NsHZCSsAu81dx9maVMuG/RgsPG81qsq\n/9bKt/H9pcMdqi/DN7OZQ5XSvMmwcxovT9eDISNH2DV1YcrU4xkVBfZDAoGBAI/8\nZ60IBcO7spfMd2f//G+lzNm7RIzm1OlhnpmFL/DLi1mcCd3fCLoOleKE5ubPsTJv\n6TfpkDm7UVWXYquBBwHnt5o5ZQx/oTYMcMEC8F1FyOqwTfrW7W/eFIIZEezjvmoG\nQArO5v6Bixj/UK0lSXXrJkuT08AQAbe/JVYGtHSHAoGBAK5AL7ZJ//xy2IqU60oF\nFX3SjdDDKYJrPJZIDgGkMQs0xaGEXaYKLgwmJESvudVd+FKCd58jUra0UHq0sRVQ\nEENVMBC57HpW44b6cXLHDh23QzVnRRcXQXdAdVyE0I4l0+yQn3iSV0LzxdulB3/O\nz2oSQj3Su5vnIMBoEtU9pucR\n-----END PRIVATE KEY-----\n",
-    "client_email": "static-website-test-999999@appspot.gserviceaccount.com",
-    "client_id": "104549922334155884100",
-    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-    "token_uri": "https://oauth2.googleapis.com/token",
-    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/static-website-test-999999%40appspot.gserviceaccount.com"
-}
+// fill the data here with your credentials from google cloud Admin API
+// This key is not required when using firebase on a deployed version, and environment = DEVELOPMENT
+// Otherwise, all endpoints will throw 500
